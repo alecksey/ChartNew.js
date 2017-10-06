@@ -568,12 +568,21 @@ function resizeCtxFunction(iter, ctx, data, config) {
 		function getCSSText(className) {
 			if (typeof document.styleSheets != "object") return "";
 			if (document.styleSheets.length <= 0) return "";
-			var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
-			for (var x = 0; x < classes.length; x++) {
-				if (classes[x].selectorText == "." + className || classes[x].selectorText == "#" + className) {
-					return ((classes[x].cssText) ? (classes[x].cssText) : (classes[x].style.cssText));
-				}
+            		var s = document.styleSheets[0];
+            		try {
+                		if(!s.cssRules)
+                    		return "";
+            		} catch (e){
+                	if(e.name !== 'SecurityError')
+                    		throw e;
+                	return "";
 			}
+			var classes = s.rules || s.cssRules;
+            		for(var x=0;x<classes.length;x++) {
+                		if(classes[x].selectorText==className) {
+                    			return classes[x].style[styleName] ? classes[x].style[styleName] : classes[x].style.getPropertyValue(styleName);
+                		}
+            		}
 			return "";
 		}
 
