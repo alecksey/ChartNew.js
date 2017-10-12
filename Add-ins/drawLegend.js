@@ -1,4 +1,4 @@
-// JavaScript Document
+// JavaScript Document drawLegend.js
 
 // element Default;
 var defaultNextLineBaseline="center";
@@ -55,19 +55,52 @@ var defaultLegendValues = {
 
 function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 
-	if(config.legendPosY==0 || config.legendPosY==4 || config.legendPosX==0 || config.legendPosX==4){
-		if(cntiter!=-1) return;
+
+    if(config.legendPosX == 5)
+    {
+        if(cntiter == -1) {
+            ctx.legendCopy = legendMsr;
+            return;
+        }
+        if('undefined' === typeof ctx.prevLeftPos) {
+            return;
+        }//Wait for end
+
+        //if(cntiter < 100)return;
+        //console.log('drw', ctx.prevLeftNeg, ctx.prevLeftPos, legendMsr, ctx);
+        //legendMsr.xLegendPos =   ctx.prevLeftNeg[0] -  Math.ceil(ctx.chartSpaceScale * Math.ceil(ctx.chartSpaceScale * config.legendSpaceLeftText)) - Math.ceil(ctx.chartSpaceScale * config.legendSpaceRightText);
+        legendMsr.xLegendPos = 400;
+    }
+
+	if((config.legendPosY==0 && config.legendPosX != 5) || config.legendPosY==4 ||config.legendPosX==0 || config.legendPosX==4){
+		if(cntiter != -1  ) {
+		    return;
+        }
 	}
 	else {
-		if(cntiter==-1)return;
+		if(cntiter == -1) {
+		    return;
+        }
 		else if (config.animation==true) {
-		
 			if(typeof config.legendWhenToDraw=="number") {
-				if (cntiter !=config.legendWhenToDraw)return;
-			} else if (cntiter !=1 && config.legendWhenToDraw=="first")return;
-			else if (cntiter != config.animationSteps && config.legendWhenToDraw=="last")return;
+				if (cntiter !=config.legendWhenToDraw){
+				    return;
+                }
+			} else if (cntiter !=1 && config.legendWhenToDraw=="first"){
+			    return;
+            }
+			else if (cntiter != config.animationSteps && config.legendWhenToDraw=="last") {
+			    return;
+            }
 		}
 	}
+
+    if(config.legendPosX == 5) {
+
+        legendMsr = ctx.legendCopy;
+        legendMsr.xLegendPos = ctx.prevLeftPos[0] - legendMsr.legendWidth / 2;
+        config.legendPosX = 2;
+    }
 
 	ctx.save();
 	if (config.legendFillColor != "rgba(0,0,0,0)") {
@@ -90,9 +123,9 @@ function drawLegend(legendMsr,data,config,ctx,typegraph,cntiter) {
 	var xpos,ypos,i,j;
 	for(i=0;i<legendMsr.elementMsr.length;i++) {
 		if(legendMsr.elementMsr[i].element.element=="shapeText") {
-			// draw Shape;
 			xpos=legendMsr.xLegendPos+legendMsr.legendFirstTextXPos+legendMsr.elementMsr[i].eltPosX+legendMsr.elementMsr[i].shapePosX;
-			ypos=legendMsr.yLegendPos+legendMsr.legendFirstTextYPos+legendMsr.elementMsr[i].eltPosY+legendMsr.elementMsr[i].shapePosY;
+            // draw Shape;
+            ypos=legendMsr.yLegendPos+legendMsr.legendFirstTextYPos+legendMsr.elementMsr[i].eltPosY+legendMsr.elementMsr[i].shapePosY;
 
 
 			if(legendMsr.elementMsr[i].shapeHeight>0 && legendMsr.elementMsr[i].shapeWidth>0) {
