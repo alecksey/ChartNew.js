@@ -4013,6 +4013,9 @@ window.Chart = function (context) {
                     topBar = botBar + currentAnimPc * (statData[i][j].yPosTop - statData[i][j].yPosBottom);
                     if (1 * data.datasets[i].data[j] > 0) prevTopPos[j] = topBar;
                     else prevTopNeg[j] = topBar;
+
+                    ctx.prevLeftPos = prevLeftPos;
+                    ctx.prevLeftNeg = prevLeftNeg;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
                             nullvalue: null
                         }) == false) continue;
@@ -4400,6 +4403,7 @@ window.Chart = function (context) {
             var prevLeftPos = new Array();
             var prevLeftNeg = new Array();
             var correctedAnimationDecimal;
+
             for (var i = 0; i < data.datasets.length; i++) {
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "HORIZONTALSTACKEDBAR");
@@ -4427,6 +4431,8 @@ window.Chart = function (context) {
                     rightBar = leftBar + currentAnimPc * (statData[i][j].xPosRight - statData[i][j].xPosLeft);
                     if (1 * data.datasets[i].data[j] > 0) prevLeftPos[j] = rightBar;
                     else prevLeftNeg[j] = rightBar;
+                    ctx.prevLeftPos = prevLeftPos;
+                    ctx.prevLeftNeg = prevLeftNeg;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
                             nullvalue: null
                         }) == false) continue;
@@ -6817,7 +6823,7 @@ window.Chart = function (context) {
         if (widestLegend > -99999998) {
             if (config.legendPosY == 0 || config.legendPosY == 4) {
                 var availableLegendWidth, maxLegendOnLine;
-                if (config.legendPosX == 1 || config.legendPosX == 2 || config.legendPosX == 3) {
+                if (config.legendPosX == 1 || config.legendPosX == 2 || config.legendPosX == 3 || config.legendPosX == 5) {
                     availableLegendWidth = availableWidth - Math.ceil(ctx.chartSpaceScale * Math.ceil(ctx.chartSpaceScale * config.legendSpaceLeftText)) - Math.ceil(ctx.chartSpaceScale * config.legendSpaceRightText);
                 } else {
                     availableLegendWidth = width - borderRHeight - borderLHeight - Math.ceil(ctx.chartSpaceScale * config.spaceLeft) - Math.ceil(ctx.chartSpaceScale * config.spaceRight) - Math.ceil(ctx.chartSpaceScale * Math.ceil(ctx.chartSpaceScale * config.legendSpaceLeftText)) - Math.ceil(ctx.chartSpaceScale * config.legendSpaceRightText);
@@ -7183,6 +7189,9 @@ window.Chart = function (context) {
                 case 4:
                     if (config.legendPosY == 0 || config.legendPosY == 4) xLegendPos = width - prevRightNotUsableWidth - legendWidth;
                     break;
+                case 5:
+                    xLegendPos = leftNotUsableWidth + (availableWidth) / 2 - legendWidth / 2;
+                    break;
                 default:
                     xLegendPos = width - rightNotUsableWidth;
                     break;
@@ -7455,12 +7464,19 @@ window.Chart = function (context) {
                 if (config.legendPosY == 0 || config.legendPosY == 4 || config.legendPosX == 0 || config.legendPosX == 4) {
                     drawLegend(legendMsr, data, config, ctx, typegraph, -1);
                     legendMsr = {
-                        dispLegend: false
+                        dispLegend: false,
+                        legendWidth: legendWidth
                     };
                 }
+            } else if(config.legendPosX == 5) {
+                legendMsr = {
+                    dispLegend: false,
+                    legendWidth: legendWidth
+                };
             } else {
                 legendMsr = {
-                    dispLegend: false
+                    dispLegend: false,
+                    legendWidth: legendWidth
                 };
             }
         }
