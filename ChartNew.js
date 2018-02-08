@@ -4014,8 +4014,8 @@ window.Chart = function (context) {
                     if (1 * data.datasets[i].data[j] > 0) prevTopPos[j] = topBar;
                     else prevTopNeg[j] = topBar;
 
-                    ctx.prevLeftPos = prevLeftPos;
-                    ctx.prevLeftNeg = prevLeftNeg;
+                    //ctx.prevLeftPos = prevLeftPos;
+                    //ctx.prevLeftNeg = prevLeftNeg;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
                             nullvalue: null
                         }) == false) continue;
