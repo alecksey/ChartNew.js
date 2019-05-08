@@ -267,18 +267,32 @@ function tmplter(str, data) {
     }
 
 
-
     // Figure out if we're getting a template, or if we need to
     // load the template - and be sure to cache the result.
     // first check if it's can be an id
-    var fn = /^[A-Za-z][-A-Za-z0-9_:.]*$/.test(str) ? cachebis[str] = cachebis[str] || tmplter(document.getElementById(str).innerHTML) :
-        // Generate a reusable function that will serve as a template
-        // generator (and which will be cached).
-        new Function("obj", "var p=[],print=function(){p.push.apply(p,arguments);};" +
-            // Introduce the data as local variables using with(){}
-            "with(obj){p.push('" +
-            // Convert the template into pure JavaScript
-            str.replace(/[\r\n]/g, "\\n").replace(/[\t]/g, " ").split("<%").join("\t").replace(/((^|%>)[^\t]*)'/g, "$1\r").replace(/\t=(.*?)%>/g, "',$1,'").split("\t").join("');").split("%>").join("p.push('").split("\r").join("\\'") + "');}return p.join('');");
+
+    var createFunction = function(s) {
+        var k = s;
+        return function(obj){
+            var p=[],
+                print=function(){
+                    p.push.apply(p,arguments);
+                };
+            var a = k.replace(/[\r\n]/g, "\\n").replace(/[\t]/g, " ").split("<%").join("\t").replace(/((^|%>)[^\t]*)'/g, "$1\r").replace(/\t=(.*?)%>/g, ",$1,").replace(/^[,\uFEFF\xA0]+|[,\uFEFF\xA0]+$/g, '').split(',');
+            for(var i =0; i < a.length; i++)
+            {
+                p.push(obj[a[i]]);
+            }
+
+            return p.join('');
+        }
+    };
+
+
+    var fn = /^[A-Za-z][-A-Za-z0-9_:.]*$/.test(str) ? cachebis[str] = cachebis[str] || tmplter(document.getElementById(str).innerHTML) : createFunction(str);
+    // Generate a reusable function that will serve as a template
+    // generator (and which will be cached).
+
     // Provide some basic currying to the user
     return data ? fn(data) : fn;
 };
@@ -2714,69 +2728,69 @@ window.Chart = function (context) {
                             nullValue: true
                         })];
                         if (setOptionValue(true, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                                nullValue: true
-                            })) {
+                            nullValue: true
+                        })) {
                             if (setOptionValue(true, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                                    nullValue: true
-                                }) == 1) posAngle = statData[i][j].realStartAngle + setOptionValue(true, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                                nullValue: true
+                            }) == 1) posAngle = statData[i][j].realStartAngle + setOptionValue(true, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                                 nullValue: true
                             }) * (Math.PI / 180);
                             else if (setOptionValue(true, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                                    nullValue: true
-                                }) == 2) posAngle = (2 * statData[i][j].realStartAngle - statData[i][j].segmentAngle) / 2 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                                nullValue: true
+                            }) == 2) posAngle = (2 * statData[i][j].realStartAngle - statData[i][j].segmentAngle) / 2 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                                 nullValue: true
                             }) * (Math.PI / 180);
                             else if (setOptionValue(true, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                                    nullValue: true
-                                }) == 3) posAngle = statData[i][j].realStartAngle - statData[i][j].segmentAngle + setOptionValue(true, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                                nullValue: true
+                            }) == 3) posAngle = statData[i][j].realStartAngle - statData[i][j].segmentAngle + setOptionValue(true, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                                 nullValue: true
                             }) * (Math.PI / 180);
                             if (setOptionValue(true, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) labelRadius = 0 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 1) labelRadius = 0 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             else if (setOptionValue(true, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) labelRadius = statData[i][j].radiusOffset / 2 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 2) labelRadius = statData[i][j].radiusOffset / 2 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             else if (setOptionValue(true, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) labelRadius = statData[i][j].radiusOffset + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 3) labelRadius = statData[i][j].radiusOffset + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             else if (setOptionValue(true, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 4) labelRadius = scaleHop * scaleData.nbOfStepsAxis1 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 4) labelRadius = scaleHop * scaleData.nbOfStepsAxis1 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             ctx.save()
                             if (setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
-                                    nullValue: true
-                                }) == "off-center") {
+                                nullValue: true
+                            }) == "off-center") {
                                 if (setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                        nullValue: true
-                                    }) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) >= 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "left";
+                                    nullValue: true
+                                }) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) >= 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "left";
                                 else ctx.textAlign = "right";
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
-                                    nullValue: true
-                                }) == "to-center") {
+                                nullValue: true
+                            }) == "to-center") {
                                 if (setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                        nullValue: true
-                                    }) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) >= 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "right";
+                                    nullValue: true
+                                }) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) >= 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "right";
                                 else ctx.textAlign = "left";
                             } else ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                                 nullValue: true
                             });
                             if (setOptionValue(true, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
-                                    nullValue: true
-                                }) == "off-center") {
+                                nullValue: true
+                            }) == "off-center") {
                                 if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "top";
                                 else ctx.textBaseline = "bottom";
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
-                                    nullValue: true
-                                }) == "to-center") {
+                                nullValue: true
+                            }) == "to-center") {
                                 if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "bottom";
                                 else ctx.textBaseline = "top";
                             } else ctx.textBaseline = setOptionValue(true, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
@@ -2798,11 +2812,11 @@ window.Chart = function (context) {
                             ctx.translate(midPosX + labelRadius * Math.cos(posAngle), midPosY - labelRadius * Math.sin(posAngle));
                             var rotateVal = 0;
                             if (setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                    nullValue: true
-                                }) == "inRadiusAxis") rotateVal = 2 * Math.PI - posAngle;
+                                nullValue: true
+                            }) == "inRadiusAxis") rotateVal = 2 * Math.PI - posAngle;
                             else if (setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                    nullValue: true
-                                }) == "inRadiusAxisRotateLabels") {
+                                nullValue: true
+                            }) == "inRadiusAxisRotateLabels") {
                                 if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (posAngle + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) rotateVal = 3 * Math.PI - posAngle;
                                 else rotateVal = 2 * Math.PI - posAngle;
                             } else rotateVal = setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
@@ -2929,11 +2943,11 @@ window.Chart = function (context) {
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "RADAR");
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     //					var currentAnimPc = animationCorrectionOld(correctedAnimationDecimal, data, config, i, j, false).animVal;
                     var currentAnimPc = correctedAnimationDecimal.yAxis;
                     if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
@@ -2976,15 +2990,15 @@ window.Chart = function (context) {
                     ctx.beginPath();
                     for (var k = 0; k < data.datasets[i].data.length; k++) {
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, k, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", k, -1, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (!(typeof(data.datasets[i].data[k]) == 'undefined')) {
                             if (setOptionValue(true, true, 1, "POINTDOT", ctx, data, statData, undefined, config.pointDot, "pointDot", i, k, {
-                                    nullvalue: null
-                                })) {
+                                nullvalue: null
+                            })) {
                                 ctx.beginPath();
                                 ctx.fillStyle = setOptionValue(true, true, 1, "MARKERFILLCOLOR", ctx, data, statData, data.datasets[i].pointColor, config.defaultStrokeColor, "pointColor", i, k, {
                                     nullvalue: true
@@ -3015,18 +3029,18 @@ window.Chart = function (context) {
                 for (i = 0; i < data.datasets.length; i++) {
                     for (j = 0; j < data.datasets[i].data.length; j++) {
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
                         jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i, j, statData, setOptionValue(true, true, 1, "ANNOTATEDISPLAY", ctx, data, statData, data.datasets[i].annotateDisplay, config.annotateDisplay, "annotateDisplay", i, j, {
                             nullValue: true
                         })];
                         if (setOptionValue(true, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                                nullValue: true
-                            })) {
+                            nullValue: true
+                        })) {
                             ctx.save();
                             ctx.beginPath();
                             ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
@@ -3036,30 +3050,30 @@ window.Chart = function (context) {
                                 nullValue: true
                             });
                             if (setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
-                                    nullValue: true
-                                }) == "off-center") {
+                                nullValue: true
+                            }) == "off-center") {
                                 if (setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                        nullValue: true
-                                    }) == "inRadiusAxis" || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "left";
+                                    nullValue: true
+                                }) == "inRadiusAxis" || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "left";
                                 else ctx.textAlign = "right";
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
-                                    nullValue: true
-                                }) == "to-center") {
+                                nullValue: true
+                            }) == "to-center") {
                                 if (setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                        nullValue: true
-                                    }) == "inRadiusAxis" || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "right";
+                                    nullValue: true
+                                }) == "inRadiusAxis" || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > 3 * Math.PI / 2 || (config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) < Math.PI / 2) ctx.textAlign = "right";
                                 else ctx.textAlign = "left";
                             } else ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                                 nullValue: true
                             });
                             if (setOptionValue(true, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
-                                    nullValue: true
-                                }) == "off-center") {
+                                nullValue: true
+                            }) == "off-center") {
                                 if ((config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "bottom";
                                 else ctx.textBaseline = "top";
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
-                                    nullValue: true
-                                }) == "to-center") {
+                                nullValue: true
+                            }) == "to-center") {
                                 if ((config.startAngle * Math.PI / 180 - j * rotationDegree + 4 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "top";
                                 else ctx.textBaseline = "bottom";
                             } else ctx.textBaseline = setOptionValue(true, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
@@ -3077,18 +3091,18 @@ window.Chart = function (context) {
                             });
                             var radiusPrt;
                             if (setOptionValue(true, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) radiusPrt = 0 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 1) radiusPrt = 0 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             else if (setOptionValue(true, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) radiusPrt = (statData[i][j].calculated_offset) / 2 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 2) radiusPrt = (statData[i][j].calculated_offset) / 2 + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             else if (setOptionValue(true, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) radiusPrt = (statData[i][j].calculated_offset) + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 3) radiusPrt = (statData[i][j].calculated_offset) + setOptionValue(true, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             var x_pos, y_pos;
@@ -3102,11 +3116,11 @@ window.Chart = function (context) {
                             ctx.translate(x_pos, y_pos);
                             var rotateVal = 0;
                             if (setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                    nullValue: true
-                                }) == "inRadiusAxis") rotateVal = j * rotationDegree;
+                                nullValue: true
+                            }) == "inRadiusAxis") rotateVal = j * rotationDegree;
                             else if (setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                    nullValue: true
-                                }) == "inRadiusAxisRotateLabels") {
+                                nullValue: true
+                            }) == "inRadiusAxisRotateLabels") {
                                 if ((j * rotationDegree + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (j * rotationDegree + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) rotateVal = 3 * Math.PI + j * rotationDegree;
                                 else rotateVal = 2 * Math.PI + j * rotationDegree;
                             } else rotateVal = setOptionValue(true, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
@@ -3354,12 +3368,12 @@ window.Chart = function (context) {
                     statData[i][j].inRadius = 0;
                     statData[i][j].outRadius = 0;
                     if (setOptionValue(false, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
 
                     if (setOptionValue(false, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", -1, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
 
                     if (typeof data.datasets[i].data[j] == 'undefined' || 1 * data.datasets[i].data[j] <= 0) continue;
 
@@ -3461,11 +3475,11 @@ window.Chart = function (context) {
                 for (var i = 0; i < data.datasets.length; i++) {
                     for (j = 0; j < data.labels.length; j++) {
                         if (setOptionValue(false, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(false, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", -1, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (typeof data.datasets[i].data[j] == 'undefined' || 1 * data.datasets[i].data[j] <= 0) continue;
                         if (chartType == "Pie") dataCutoutRadius = cutoutRadius;
                         else dataCutoutRadius = cutoutRadius - (doughnutRadius - cutoutRadius) * setOptionValue(false, true, 1, "EXPANDINRADIUS", ctx, data, statData, data.datasets[i].expandInRadius, 0, "expandInRadius", i, j, {
@@ -3485,66 +3499,66 @@ window.Chart = function (context) {
                             nullValue: true
                         })];
                         if (setOptionValue(false, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                                nullValue: true
-                            }) && statData[i][j].segmentAngle >= (Math.PI / 180) * setOptionValue(false, true, 1, "INGRAPHDATAMINIMUMANGLE", ctx, data, statData, undefined, config.inGraphDataMinimumAngle, "inGraphDataMinimumAngle", i, j, {
-                                nullValue: true
-                            })) {
+                            nullValue: true
+                        }) && statData[i][j].segmentAngle >= (Math.PI / 180) * setOptionValue(false, true, 1, "INGRAPHDATAMINIMUMANGLE", ctx, data, statData, undefined, config.inGraphDataMinimumAngle, "inGraphDataMinimumAngle", i, j, {
+                            nullValue: true
+                        })) {
                             if (setOptionValue(false, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                                    nullValue: true
-                                }) == 1) posAngle = statData[i][j].realStartAngle + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                                nullValue: true
+                            }) == 1) posAngle = statData[i][j].realStartAngle + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                                 nullValue: true
                             }) * (Math.PI / 180);
                             else if (setOptionValue(false, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                                    nullValue: true
-                                }) == 2) posAngle = statData[i][j].realStartAngle - statData[i][j].segmentAngle / 2 + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                                nullValue: true
+                            }) == 2) posAngle = statData[i][j].realStartAngle - statData[i][j].segmentAngle / 2 + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                                 nullValue: true
                             }) * (Math.PI / 180);
                             else if (setOptionValue(false, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                                    nullValue: true
-                                }) == 3) posAngle = statData[i][j].realStartAngle - statData[i][j].segmentAngle + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                                nullValue: true
+                            }) == 3) posAngle = statData[i][j].realStartAngle - statData[i][j].segmentAngle + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                                 nullValue: true
                             }) * (Math.PI / 180);
                             if (setOptionValue(false, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) labelRadius = dataCutoutRadius + setOptionValue(false, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 1) labelRadius = dataCutoutRadius + setOptionValue(false, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             else if (setOptionValue(false, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) labelRadius = dataCutoutRadius + (dataDoughnutRadius - dataCutoutRadius) / 2 + setOptionValue(false, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 2) labelRadius = dataCutoutRadius + (dataDoughnutRadius - dataCutoutRadius) / 2 + setOptionValue(false, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             else if (setOptionValue(false, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) labelRadius = dataDoughnutRadius + setOptionValue(false, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
+                                nullValue: true
+                            }) == 3) labelRadius = dataDoughnutRadius + setOptionValue(false, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", i, j, {
                                 nullValue: true
                             });
                             ctx.save();
                             if (setOptionValue(false, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
-                                    nullValue: true
-                                }) == "off-center") {
+                                nullValue: true
+                            }) == "off-center") {
                                 if (setOptionValue(false, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                        nullValue: true
-                                    }) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) >= 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "left";
+                                    nullValue: true
+                                }) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) >= 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "left";
                                 else ctx.textAlign = "right";
                             } else if (setOptionValue(false, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
-                                    nullValue: true
-                                }) == "to-center") {
+                                nullValue: true
+                            }) == "to-center") {
                                 if (setOptionValue(false, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                        nullValue: true
-                                    }) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) >= 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "right";
+                                    nullValue: true
+                                }) == "inRadiusAxis" || (posAngle + 2 * Math.PI) % (2 * Math.PI) >= 3 * Math.PI / 2 || (posAngle + 2 * Math.PI) % (2 * Math.PI) <= Math.PI / 2) ctx.textAlign = "right";
                                 else ctx.textAlign = "left";
                             } else ctx.textAlign = setOptionValue(false, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                                 nullValue: true
                             });
                             if (setOptionValue(false, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
-                                    nullValue: true
-                                }) == "off-center") {
+                                nullValue: true
+                            }) == "off-center") {
                                 if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "top";
                                 else ctx.textBaseline = "bottom";
                             } else if (setOptionValue(false, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
-                                    nullValue: true
-                                }) == "to-center") {
+                                nullValue: true
+                            }) == "to-center") {
                                 if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI) ctx.textBaseline = "bottom";
                                 else ctx.textBaseline = "top";
                             } else ctx.textBaseline = setOptionValue(false, true, 1, "INGRAPHDATAVALIGN", ctx, data, statData, undefined, config.inGraphDataVAlign, "inGraphDataVAlign", i, j, {
@@ -3566,11 +3580,11 @@ window.Chart = function (context) {
                             ctx.translate(midPieX + labelRadius * Math.cos(posAngle), midPieY - labelRadius * Math.sin(posAngle));
                             var rotateVal = 0;
                             if (setOptionValue(false, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                    nullValue: true
-                                }) == "inRadiusAxis") rotateVal = 2 * Math.PI - posAngle;
+                                nullValue: true
+                            }) == "inRadiusAxis") rotateVal = 2 * Math.PI - posAngle;
                             else if (setOptionValue(false, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
-                                    nullValue: true
-                                }) == "inRadiusAxisRotateLabels") {
+                                nullValue: true
+                            }) == "inRadiusAxisRotateLabels") {
                                 if ((posAngle + 2 * Math.PI) % (2 * Math.PI) > Math.PI / 2 && (posAngle + 2 * Math.PI) % (2 * Math.PI) < 3 * Math.PI / 2) rotateVal = 3 * Math.PI - posAngle;
                                 else rotateVal = 2 * Math.PI - posAngle;
                             } else rotateVal = setOptionValue(false, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", i, j, {
@@ -4000,8 +4014,8 @@ window.Chart = function (context) {
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "STACKEDBAR");
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     var currentAnimPc = correctedAnimationDecimal.yAxis;
                     if (currentAnimPc > 1) currentAnimPc = currentAnimPc - 1;
                     if ((typeof data.datasets[i].data[j] == 'undefined') || 1 * data.datasets[i].data[j] == 0) continue;
@@ -4020,8 +4034,8 @@ window.Chart = function (context) {
                     //ctx.prevLeftPos = prevLeftPos;
                     //ctx.prevLeftNeg = prevLeftNeg;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     ctx.save();
                     ctx.lineWidth = Math.ceil(ctx.chartLineScale * setOptionValue(true, true, 1, "BARSTROKEWIDTH", ctx, data, statData, data.datasets[i].barStrokeWidth, config.barStrokeWidth, "barStrokeWidth", i, j, {
                         animationValue: currentAnimPc,
@@ -4078,18 +4092,18 @@ window.Chart = function (context) {
                 for (i = 0; i < data.datasets.length; i++) {
                     for (j = 0; j < data.datasets[i].data.length; j++) {
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
                         jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData, setOptionValue(true, true, 1, "ANNOTATEDISPLAY", ctx, data, statData, data.datasets[i].annotateDisplay, config.annotateDisplay, "annotateDisplay", i, j, {
                             nullValue: true
                         })];
                         if (setOptionValue(true, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                                nullValue: true
-                            })) {
+                            nullValue: true
+                        })) {
                             ctx.save();
                             ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                                 nullValue: true
@@ -4115,39 +4129,39 @@ window.Chart = function (context) {
                             yPos = 0;
                             xPos = 0;
                             if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) {
+                                nullValue: true
+                            }) == 1) {
                                 xPos = statData[i][j].xPosLeft + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) {
+                                nullValue: true
+                            }) == 2) {
                                 xPos = statData[i][j].xPosLeft + barWidth / 2 + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) {
+                                nullValue: true
+                            }) == 3) {
                                 xPos = statData[i][j].xPosLeft + barWidth + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             }
                             if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) {
+                                nullValue: true
+                            }) == 1) {
                                 yPos = statData[i][j].yPosBottom - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) {
+                                nullValue: true
+                            }) == 2) {
                                 yPos = (statData[i][j].yPosTop + statData[i][j].yPosBottom) / 2 - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) {
+                                nullValue: true
+                            }) == 3) {
                                 yPos = statData[i][j].yPosTop - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
@@ -4411,8 +4425,8 @@ window.Chart = function (context) {
                 for (var j = 0; j < data.datasets[i].data.length; j++) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "HORIZONTALSTACKEDBAR");
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     ctx.lineWidth = Math.ceil(ctx.chartLineScale * setOptionValue(true, true, 1, "BARSTROKEWIDTH", ctx, data, statData, data.datasets[i].barStrokeWidth, config.barStrokeWidth, "barStrokeWidth", i, j, {
                         animationValue: currentAnimPc,
                         xPosLeft: leftBar,
@@ -4437,8 +4451,8 @@ window.Chart = function (context) {
                     ctx.prevLeftPos = prevLeftPos;
                     ctx.prevLeftNeg = prevLeftNeg;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     ctx.fillStyle = setOptionValue(true, true, 1, "COLOR", ctx, data, statData, data.datasets[i].fillColor, config.defaultFillColor, "fillColor", i, j, {
                         animationValue: currentAnimPc,
                         xPosLeft: leftBar,
@@ -4479,18 +4493,18 @@ window.Chart = function (context) {
                 for (i = 0; i < data.datasets.length; i++) {
                     for (j = 0; j < data.datasets[i].data.length; j++) {
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if ((typeof(data.datasets[i].data[j]) == 'undefined')) continue;
                         jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData, setOptionValue(true, true, 1, "ANNOTATEDISPLAY", ctx, data, statData, data.datasets[i].annotateDisplay, config.annotateDisplay, "annotateDisplay", i, j, {
                             nullValue: true
                         })];
                         if (setOptionValue(true, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                                nullValue: true
-                            })) {
+                            nullValue: true
+                        })) {
                             ctx.save();
                             ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                                 nullValue: true
@@ -4515,39 +4529,39 @@ window.Chart = function (context) {
                             yPos = 0;
                             xPos = 0;
                             if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) {
+                                nullValue: true
+                            }) == 1) {
                                 xPos = statData[i][j].xPosLeft + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) {
+                                nullValue: true
+                            }) == 2) {
                                 xPos = statData[i][j].xPosLeft + (statData[i][j].xPosRight - statData[i][j].xPosLeft) / 2 + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) {
+                                nullValue: true
+                            }) == 3) {
                                 xPos = statData[i][j].xPosRight + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             }
                             if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) {
+                                nullValue: true
+                            }) == 1) {
                                 yPos = statData[i][j].yPosBottom - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) {
+                                nullValue: true
+                            }) == 2) {
                                 yPos = statData[i][j].yPosBottom - barWidth / 2 - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) {
+                                nullValue: true
+                            }) == 3) {
                                 yPos = statData[i][j].yPosTop - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
@@ -4793,11 +4807,11 @@ window.Chart = function (context) {
                 for (j = 0; j < data.datasets[i].data.length; j++) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "BAR");
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     ctx.save();
                     ctx.lineWidth = Math.ceil(ctx.chartLineScale * setOptionValue(true, true, 1, "BARSTROKEWIDTH", ctx, data, statData, data.datasets[i].barStrokeWidth, config.barStrokeWidth, "barStrokeWidth", i, j, {
                         animationValue: currentAnimPc,
@@ -4838,11 +4852,11 @@ window.Chart = function (context) {
                 for (j = 0; j < data.datasets[i].data.length; j++) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "BAR");
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     complementaryBar = setOptionValue(true, true, 1, "COMPLEMENTARYBAR", ctx, data, statData, data.datasets[i].complementaryBar, config.complementaryBar, "complementaryBar", i, j, {
                         nullvalue: null
                     });
@@ -4900,19 +4914,19 @@ window.Chart = function (context) {
                 for (i = 0; i < data.datasets.length; i++) {
                     for (j = 0; j < data.datasets[i].data.length; j++) {
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
                         if (data.datasets[i].type == "Line") continue;
                         jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData, setOptionValue(true, true, 1, "ANNOTATEDISPLAY", ctx, data, statData, data.datasets[i].annotateDisplay, config.annotateDisplay, "annotateDisplay", i, j, {
                             nullValue: true
                         })];
                         if (setOptionValue(true, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                                nullValue: true
-                            })) {
+                            nullValue: true
+                        })) {
                             ctx.save();
                             ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                                 nullValue: true
@@ -4936,39 +4950,39 @@ window.Chart = function (context) {
                             var yPos = 0,
                                 xPos = 0;
                             if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) {
+                                nullValue: true
+                            }) == 1) {
                                 xPos = statData[i][j].xPosLeft + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) {
+                                nullValue: true
+                            }) == 2) {
                                 xPos = statData[i][j].xPosLeft + barWidth / 2 + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) {
+                                nullValue: true
+                            }) == 3) {
                                 xPos = statData[i][j].xPosLeft + barWidth + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             }
                             if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) {
+                                nullValue: true
+                            }) == 1) {
                                 yPos = statData[i][j].yPosBottom - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) {
+                                nullValue: true
+                            }) == 2) {
                                 yPos = (statData[i][j].yPosBottom + statData[i][j].yPosTop) / 2 - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) {
+                                nullValue: true
+                            }) == 3) {
                                 yPos = statData[i][j].yPosTop - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
@@ -5244,11 +5258,11 @@ window.Chart = function (context) {
                 for (j = 0; j < data.datasets[i].data.length; j++) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "HORIZONTALBAR");
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     ctx.save();
                     ctx.lineWidth = Math.ceil(ctx.chartLineScale * setOptionValue(true, true, 1, "BARSTROKEWIDTH", ctx, data, statData, data.datasets[i].barStrokeWidth, config.barStrokeWidth, "barStrokeWidth", i, j, {
                         animationValue: currentAnimPc,
@@ -5288,11 +5302,11 @@ window.Chart = function (context) {
                 for (j = 0; j < data.datasets[i].data.length; j++) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "HORIZONTALBAR");
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     complementaryBar = setOptionValue(true, true, 1, "COMPLEMENTARYBAR", ctx, data, statData, data.datasets[i].complementaryBar, config.complementaryBar, "complementaryBar", i, j, {
                         nullvalue: null
                     });
@@ -5348,18 +5362,18 @@ window.Chart = function (context) {
                 for (i = 0; i < data.datasets.length; i++) {
                     for (j = 0; j < data.datasets[i].data.length; j++) {
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
                         jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["RECT", i, j, statData, setOptionValue(true, true, 1, "ANNOTATEDISPLAY", ctx, data, statData, data.datasets[i].annotateDisplay, config.annotateDisplay, "annotateDisplay", i, j, {
                             nullValue: true
                         })];
                         if (setOptionValue(true, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                                nullValue: true
-                            })) {
+                            nullValue: true
+                        })) {
                             ctx.save();
                             ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                                 nullValue: true
@@ -5381,39 +5395,39 @@ window.Chart = function (context) {
                             var yPos = 0,
                                 xPos = 0;
                             if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) {
+                                nullValue: true
+                            }) == 1) {
                                 yPos = statData[i][j].yPosTop - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 }) + barWidth;
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) {
+                                nullValue: true
+                            }) == 2) {
                                 yPos = statData[i][j].yPosTop + barWidth / 2 - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAYPOSITION", ctx, data, statData, undefined, config.inGraphDataYPosition, "inGraphDataYPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) {
+                                nullValue: true
+                            }) == 3) {
                                 yPos = statData[i][j].yPosTop - setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGY", ctx, data, statData, undefined, config.inGraphDataPaddingY, "inGraphDataPaddingY", i, j, {
                                     nullValue: true
                                 });
                             }
                             if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 1) {
+                                nullValue: true
+                            }) == 1) {
                                 xPos = statData[i][j].xPosLeft + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 2) {
+                                nullValue: true
+                            }) == 2) {
                                 xPos = (statData[i][j].xPosLeft + statData[i][j].xPosRight) / 2 + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
                             } else if (setOptionValue(true, true, 1, "INGRAPHDATAXPOSITION", ctx, data, statData, undefined, config.inGraphDataXPosition, "inGraphDataXPosition", i, j, {
-                                    nullValue: true
-                                }) == 3) {
+                                nullValue: true
+                            }) == 3) {
                                 xPos = statData[i][j].xPosRight + setOptionValue(true, true, ctx.chartSpaceScale, "INGRAPHDATAPADDINGX", ctx, data, statData, undefined, config.inGraphDataPaddingX, "inGraphDataPaddingX", i, j, {
                                     nullValue: true
                                 });
@@ -6328,16 +6342,27 @@ window.Chart = function (context) {
     }
 
     function tmplpart2(str, data) {
+
+        var createFunction = function(s) {
+            var k = s;
+            return function(obj){
+                var p=[],
+                    print=function(){
+                        p.push.apply(p,arguments);
+                    };
+                var a = k.replace(/[\r\n]/g, "\\n").replace(/[\t]/g, " ").split("<%").join("\t").replace(/((^|%>)[^\t]*)'/g, "$1\r").replace(/\t=(.*?)%>/g, ",$1,").replace(/^[,\uFEFF\xA0]+|[,\uFEFF\xA0]+$/g, '').split(',');
+                for(var i =0; i < a.length; i++)
+                {
+                    p.push(obj[a[i]]);
+                }
+
+                return p.join('');
+            }
+        };
+
         // Figure out if we're getting a template, or if we need to
         // load the template - and be sure to cache the result.
-        var fn = !/\W/.test(str) ? cache[str] = cache[str] || tmplpart2(document.getElementById(str).innerHTML) :
-            // Generate a reusable function that will serve as a template
-            // generator (and which will be cached).
-            new Function("obj", "var p=[],print=function(){p.push.apply(p,arguments);};" +
-                // Introduce the data as local variables using with(){}
-                "with(obj){p.push('" +
-                // Convert the template into pure JavaScript
-                str.replace(/[\r\t\n]/g, " ").split("<%").join("\t").replace(/((^|%>)[^\t]*)'/g, "$1\r").replace(/\t=(.*?)%>/g, "',$1,'").split("\t").join("');").split("%>").join("p.push('").split("\r").join("\\'") + "');}return p.join('');");
+        var fn = !/\W/.test(str) ? cache[str] = cache[str] || tmplpart2(document.getElementById(str).innerHTML) : createFunction(str);
         // Provide some basic currying to the user
         return data ? fn(data) : fn;
     };
@@ -7524,11 +7549,11 @@ window.Chart = function (context) {
             for (j = 0; j < data.datasets[i].data.length; j++) {
                 correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "BUBBLE");
                 if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                        nullvalue: null
-                    }) == false) continue;
+                    nullvalue: null
+                }) == false) continue;
                 if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                        nullvalue: null
-                    }) == false) continue;
+                    nullvalue: null
+                }) == false) continue;
                 ctx.save();
                 if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
                     currentAnimPc = correctedAnimationDecimal.yAxis;
@@ -7567,11 +7592,11 @@ window.Chart = function (context) {
             for (i = 0; i < data.datasets.length; i++) {
                 for (j = 0; j < data.datasets[i].data.length; j++) {
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) continue;
+                        nullvalue: null
+                    }) == false) continue;
                     if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
                     if (statData[i][0].tpchart != "Bubble") continue;
                     maxBubbleRadius = config.bubbleMaxRadius * Math.min(statData[i][j].availableHeight, statData[i][j].availableWidth);
@@ -7584,8 +7609,8 @@ window.Chart = function (context) {
                         nullValue: true
                     })];
                     if (setOptionValue(true, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                            nullValue: true
-                        })) {
+                        nullValue: true
+                    })) {
                         ctx.save();
                         ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                             nullValue: true
@@ -7681,8 +7706,8 @@ window.Chart = function (context) {
         var correctedAnimationDecimal;
         for (var i = 0; i < data.datasets.length; i++) {
             if (setOptionValue(true, true, 1, "ANIMATION", ctx, data, statData, data.datasets[i].animation, config.animation, "animation", i, -1, {
-                    nullvalue: null
-                }) == true || animationDecimal.animationGlobal >= 1) {
+                nullvalue: null
+            }) == true || animationDecimal.animationGlobal >= 1) {
                 prevypos = "undefined";
                 if (statData[i][0].tpchart != "Line") continue;
                 if (statData[i].length == 0) continue;
@@ -7700,11 +7725,11 @@ window.Chart = function (context) {
                     correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "LINE");
                     todisplay = true;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                            nullvalue: null
-                        }) == false) todisplay = false;
+                        nullvalue: null
+                    }) == false) todisplay = false;
                     if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                            nullvalue: null
-                        }) == false) todisplay = false;
+                        nullvalue: null
+                    }) == false) todisplay = false;
                     if (typeof(data.datasets[i].data[j]) == "undefined") todisplay = false;
                     if (prevAnimPc.animVal == 0 && j > statData[i][0].firstNotMissing) continue;
                     currentAnimPc = {
@@ -7734,8 +7759,8 @@ window.Chart = function (context) {
                             ctx.setLineDash([]);
                             ctx.strokeStyle = "rgba(0,0,0,0)";
                             if (config.datasetFill && setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                                    nullvalue: null
-                                }) != 1) {
+                                nullvalue: null
+                            }) != 1) {
                                 ctx.lineTo(statData[i][statData[i][j].prevNotMissing].xPos + fact * (statData[i][statData[i][j - 1].nextNotMissing].xPos - statData[i][statData[i][j].prevNotMissing].xPos), statData[i][j].yAxisPos);
                                 ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY - statData[i][0].zeroY);
                                 ctx.closePath();
@@ -7759,8 +7784,8 @@ window.Chart = function (context) {
                             ctx.setLineDash([]);
                             ctx.strokeStyle = "rgba(0,0,0,0)";
                             if (config.datasetFill && setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                                    nullvalue: null
-                                }) != 1) {
+                                nullvalue: null
+                            }) != 1) {
                                 ctx.lineTo(statData[i][j - 1].xPos + prevAnimPc.subVal * (statData[i][j].xPos - statData[i][j - 1].xPos), statData[i][j].yAxisPos);
                                 ctx.lineTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY - statData[i][0].zeroY);
                                 ctx.closePath();
@@ -7805,8 +7830,8 @@ window.Chart = function (context) {
                                 ctx.stroke();
                                 ctx.setLineDash([]);
                                 if (config.datasetFill && firstpt != -1 && setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                                        nullvalue: null
-                                    }) != 1) {
+                                    nullvalue: null
+                                }) != 1) {
                                     lastxPos = -1;
                                     ctx.strokeStyle = "rgba(0,0,0,0)";
                                     ctx.lineTo(statData[i][j - 1].xPos, statData[i][j - 1].yAxisPos);
@@ -7846,8 +7871,8 @@ window.Chart = function (context) {
                                 firstpt = j;
                                 ctx.beginPath();
                                 if (setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                                        nullvalue: null
-                                    }) == 1) {
+                                    nullvalue: null
+                                }) == 1) {
                                     if (typeof statData[i][j].yPosOffsetOrigin != "undefined") ctx.moveTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffsetOrigin);
                                     else ctx.moveTo(statData[i][firstpt].xPos, statData[i][firstpt].xAxisPosY - statData[i][0].zeroY);
                                     ctx.lineTo(statData[i][j].xPos, statData[i][j].yAxisPos - currentAnimPc.mainVal * statData[i][j].yPosOffset);
@@ -7879,8 +7904,8 @@ window.Chart = function (context) {
                 ctx.stroke();
                 ctx.setLineDash([]);
                 if (config.datasetFill && setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                        nullvalue: null
-                    }) != 1) {
+                    nullvalue: null
+                }) != 1) {
                     if (firstpt >= 0) {
                         ctx.strokeStyle = "rgba(0,0,0,0)";
                         ctx.lineTo(lastxPos, statData[i][0].xAxisPosY - statData[i][0].zeroY);
@@ -7900,11 +7925,11 @@ window.Chart = function (context) {
                 if (animationDecimal.animationGlobal >= 1) {
                     for (j = 0; j < data.datasets[i].data.length; j++) {
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (!(typeof(data.datasets[i].data[j]) == 'undefined')) {
                             //							currentAnimPc = animationCorrectionV2(correctedAnimationDecimal.yAxis, data, config, i, j, true);
                             correctedAnimationDecimal = correctAnimation(animationDecimal, data, config, i, j, statData, "LINE");
@@ -7915,8 +7940,8 @@ window.Chart = function (context) {
                             }
                             if (currentAnimPc.mainVal > 0 || !config.animationLeftToRight) {
                                 if (setOptionValue(true, true, 1, "POINTDOT", ctx, data, statData, undefined, config.pointDot, "pointDot", i, j, {
-                                        nullvalue: null
-                                    })) {
+                                    nullvalue: null
+                                })) {
                                     ctx.beginPath();
                                     ctx.fillStyle = setOptionValue(true, true, 1, "MARKERFILLCOLOR", ctx, data, statData, data.datasets[i].pointColor, config.defaultStrokeColor, "pointColor", i, j, {
                                         nullvalue: true
@@ -7945,18 +7970,18 @@ window.Chart = function (context) {
                 if (animationDecimal.animationGlobal >= config.animationStopValue) {
                     for (j = 0; j < data.datasets[i].data.length; j++) {
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, statData, data.displayData, config.displayData, "displayData", j, -1, {
-                                nullvalue: null
-                            }) == false) continue;
+                            nullvalue: null
+                        }) == false) continue;
                         if (typeof(data.datasets[i].data[j]) == 'undefined') continue;
                         if (!(data.datasets[i].mouseDetection == false)) jsGraphAnnotate[ctx.ChartNewId][jsGraphAnnotate[ctx.ChartNewId].length] = ["POINT", i, j, statData, setOptionValue(true, true, 1, "ANNOTATEDISPLAY", ctx, data, statData, data.datasets[i].annotateDisplay, config.annotateDisplay, "annotateDisplay", i, j, {
                             nullValue: true
                         })];
                         if (setOptionValue(true, true, 1, "INGRAPHDATASHOW", ctx, data, statData, data.datasets[i].inGraphDataShow, config.inGraphDataShow, "inGraphDataShow", i, j, {
-                                nullValue: true
-                            })) {
+                            nullValue: true
+                        })) {
                             ctx.save();
                             ctx.textAlign = setOptionValue(true, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", i, j, {
                                 nullValue: true
@@ -8020,10 +8045,10 @@ window.Chart = function (context) {
 
         function initbz(pts, xpos, ypos, i) {
             if (setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                    nullvalue: null
-                }) == 0 && setOptionValue(true, true, 1, "BEZIERCURVE", ctx, data, statData, undefined, config.bezierCurve, "bezierCurve", i, -1, {
-                    nullValue: true
-                })) {
+                nullvalue: null
+            }) == 0 && setOptionValue(true, true, 1, "BEZIERCURVE", ctx, data, statData, undefined, config.bezierCurve, "bezierCurve", i, -1, {
+                nullValue: true
+            })) {
                 pts.length = 0;
                 pts.push(xpos);
                 pts.push(ypos);
@@ -8039,25 +8064,25 @@ window.Chart = function (context) {
 
         function traceLine(pts, ctx, xpos, ypos, config, data, statData, i, yposOrigin) {
             if (setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                    nullvalue: null
-                }) == 0 && setOptionValue(true, true, 1, "BEZIERCURVE", ctx, data, statData, undefined, config.bezierCurve, "bezierCurve", i, -1, {
-                    nullValue: true
-                })) {
+                nullvalue: null
+            }) == 0 && setOptionValue(true, true, 1, "BEZIERCURVE", ctx, data, statData, undefined, config.bezierCurve, "bezierCurve", i, -1, {
+                nullValue: true
+            })) {
                 pts.push(xpos);
                 pts.push(ypos);
             } else {
                 if (setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                        nullvalue: null
-                    }) == 0) ctx.lineTo(xpos, ypos);
+                    nullvalue: null
+                }) == 0) ctx.lineTo(xpos, ypos);
                 else if (setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                        nullvalue: null
-                    }) == 1) {
+                    nullvalue: null
+                }) == 1) {
                     if (yposOrigin != "undefined") ctx.moveTo(xpos, yposOrigin);
                     else ctx.moveTo(xpos, statData[i][0].xAxisPosY - statData[i][0].zeroY);
                     ctx.lineTo(xpos, ypos);
                 } else if (setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                        nullvalue: null
-                    }) == 2 && typeof prevypos != "undefined") {
+                    nullvalue: null
+                }) == 2 && typeof prevypos != "undefined") {
                     ctx.lineTo(xpos, prevypos);
                     ctx.lineTo(xpos, ypos);
                     prevypos = ypos;
@@ -8067,10 +8092,10 @@ window.Chart = function (context) {
 
         function closebz(pts, ctx, config, i) {
             if (setOptionValue(true, true, 1, "LINKTYPE", ctx, data, statData, data.datasets[i].linkType, config.linkType, "linkType", i, j, {
-                    nullvalue: null
-                }) == 0 && setOptionValue(true, true, 1, "BEZIERCURVE", ctx, data, statData, undefined, config.bezierCurve, "bezierCurve", i, -1, {
-                    nullValue: true
-                })) {
+                nullvalue: null
+            }) == 0 && setOptionValue(true, true, 1, "BEZIERCURVE", ctx, data, statData, undefined, config.bezierCurve, "bezierCurve", i, -1, {
+                nullValue: true
+            })) {
                 minimumpos = statData[i][0].xAxisPosY;
                 maximumpos = statData[i][0].xAxisPosY - statData[i][0].calculatedScale.steps * statData[i][0].scaleHop;
                 drawSpline(ctx, pts, setOptionValue(true, true, 1, "BEZIERCURVETENSION", ctx, data, statData, undefined, config.bezierCurveTension, "bezierCurveTension", i, -1, {
@@ -8402,12 +8427,12 @@ function drawLegend(legendMsr, data, config, ctx, typegraph, cntiter) {
                 ctx.beginPath();
                 if (ctx.tpchart == "Bar" || ctx.tpchart == "StackedBar")
                     if (data.datasets[orderi].type == "Line" && (!config.datasetFill || setOptionValue(true, false, 1, "LINKTYPE", ctx, data, undefined, data.datasets[orderi].linkType, config.linkType, "linkType", orderi, -1, {
-                            nullvalue: null
-                        }) == 1)) lgdbox = false;
+                        nullvalue: null
+                    }) == 1)) lgdbox = false;
                 if (ctx.tpchart == "Line" && ctx.tpchartSub == "Bubble")
                     if (data.datasets[orderi].type == "Line" && (!config.datasetFill || setOptionValue(true, false, 1, "LINKTYPE", ctx, data, undefined, data.datasets[orderi].linkType, config.linkType, "linkType", orderi, -1, {
-                            nullvalue: null
-                        }) == 1)) lgdbox = false;
+                        nullvalue: null
+                    }) == 1)) lgdbox = false;
                 if (lgdbox) {
                     ctx.lineWidth = Math.ceil(ctx.chartLineScale * setOptionValue(true, false, 1, "LINEWIDTH", ctx, data, undefined, data.datasets[orderi].datasetStrokeWidth, config.datasetStrokeWidth, "datasetStrokeWidth", orderi, -1, {
                         nullvalue: null
@@ -8787,18 +8812,18 @@ function initPassVariableData_part1(data, config, ctx) {
             var todisplay = true;
             if (ctx.tpchart == "Doughnut") {
                 if (setOptionValue(false, true, 1, "DISPLAYDATA", ctx, data, null, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                        nullvalue: null
-                    }) == false) todisplay = false;
+                    nullvalue: null
+                }) == false) todisplay = false;
                 if (setOptionValue(false, true, 1, "DISPLAYDATA", ctx, data, null, data.displayData, config.displayData, "displayData", -1, j, {
-                        nullvalue: null
-                    }) == false) todisplay = false;
+                    nullvalue: null
+                }) == false) todisplay = false;
             } else {
                 if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, null, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                        nullvalue: null
-                    }) == false) todisplay = false;
+                    nullvalue: null
+                }) == false) todisplay = false;
                 if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, null, data.displayData, config.displayData, "displayData", j, -1, {
-                        nullvalue: null
-                    }) == false) todisplay = false;
+                    nullvalue: null
+                }) == false) todisplay = false;
             }
             if (typeof data.datasets[i].data[j] == "undefined") todisplay = false;
             if (todisplay == true) {
@@ -8838,11 +8863,11 @@ function initPassVariableData_part1(data, config, ctx) {
             var todisplay = true;
             if (tpdraw(ctx, data.datasets[i]) == "Line") {
                 if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, null, data.datasets[i].displayData, config.displayData, "displayData", i, j, {
-                        nullvalue: null
-                    }) == false) todisplay = false;
+                    nullvalue: null
+                }) == false) todisplay = false;
                 if (setOptionValue(true, true, 1, "DISPLAYDATA", ctx, data, null, data.displayData, config.displayData, "displayData", j, -1, {
-                        nullvalue: null
-                    }) == false) todisplay = false;
+                    nullvalue: null
+                }) == false) todisplay = false;
             }
             if (typeof data.datasets[i].data[j] == "undefined") todisplay = false;
             if (todisplay) {
@@ -9764,12 +9789,12 @@ function calculatePieDrawingSize(ctx, msr, config, data, statData) {
     // Computerange Pie Radius
     var j = data.labels.length - 1;
     if (isBooleanOptionTrue(undefined, config.inGraphDataShow) && setOptionValue(false, true, 1, "INGRAPHDATARADIUSPOSITION", ctx, data, statData, undefined, config.inGraphDataRadiusPosition, "inGraphDataRadiusPosition", 0, j, {
-            nullValue: true
-        }) == 3 && setOptionValue(false, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", 0, j, {
-            nullValue: true
-        }) == "off-center" && setOptionValue(false, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", 0, j, {
-            nullValue: true
-        }) == 0) {
+        nullValue: true
+    }) == 3 && setOptionValue(false, true, 1, "INGRAPHDATAALIGN", ctx, data, statData, undefined, config.inGraphDataAlign, "inGraphDataAlign", 0, j, {
+        nullValue: true
+    }) == "off-center" && setOptionValue(false, true, 1, "INGRAPHDATAROTATE", ctx, data, statData, undefined, config.inGraphDataRotate, "inGraphDataRotate", 0, j, {
+        nullValue: true
+    }) == 0) {
         doughnutRadius = doughnutRadius - setOptionValue(false, true, ctx.chartTextScale, "INGRAPHDATAFONTSIZE", ctx, data, statData, undefined, config.inGraphDataFontSize, "inGraphDataFontSize", 0, j, {
             nullValue: true
         }) - setOptionValue(false, true, 1, "INGRAPHDATAPADDINGRADIUS", ctx, data, statData, undefined, config.inGraphDataPaddingRadius, "inGraphDataPaddingRadius", 0, j, {
@@ -9786,18 +9811,18 @@ function calculatePieDrawingSize(ctx, msr, config, data, statData) {
                     nullValue: true
                 });
                 if (setOptionValue(false, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                        nullValue: true
-                    }) == 1) posAngle = realCumulativeAngle + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                    nullValue: true
+                }) == 1) posAngle = realCumulativeAngle + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                     nullValue: true
                 }) * (Math.PI / 180);
                 else if (setOptionValue(false, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                        nullValue: true
-                    }) == 2) posAngle = realCumulativeAngle - statData[i][j].segmentAngle / 2 + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                    nullValue: true
+                }) == 2) posAngle = realCumulativeAngle - statData[i][j].segmentAngle / 2 + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                     nullValue: true
                 }) * (Math.PI / 180);
                 else if (setOptionValue(false, true, 1, "INGRAPHDATAANGLEPOSITION", ctx, data, statData, undefined, config.inGraphDataAnglePosition, "inGraphDataAnglePosition", i, j, {
-                        nullValue: true
-                    }) == 3) posAngle = realCumulativeAngle - statData[i][j].segmentAngle + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
+                    nullValue: true
+                }) == 3) posAngle = realCumulativeAngle - statData[i][j].segmentAngle + setOptionValue(false, true, 1, "INGRAPHDATAPADDINANGLE", ctx, data, statData, undefined, config.inGraphDataPaddingAngle, "inGraphDataPaddingAngle", i, j, {
                     nullValue: true
                 }) * (Math.PI / 180);
                 realCumulativeAngle -= statData[i][j].segmentAngle;
