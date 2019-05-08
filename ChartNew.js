@@ -34,7 +34,7 @@
 // ctx.firstPass=9 : chart is completely drawn;
 // If chartJsResize called : increment the value of ctx.firstPass with a value of 10.
 // non standard functions;
-var annotate_shape = 'divCursor'
+var annotate_shape = 'divCursor';
 var chartJSLineStyle = [];
 chartJSLineStyle["solid"] = [];
 chartJSLineStyle["dotted"] = [1, 4];
@@ -230,7 +230,7 @@ function addParameters2Function(data, fctName, fctList) {
         fctName = fctName.substr(0, fctName.length - 3);
         dif = true;
     }
-    if (typeof eval(fctName) == "function") {
+    if (typeof window[fctName] == "function") {
         var parameter = eval(fctList + "." + fctName);
         if (dif) {
             // difference between v3 (current value) and math function
@@ -685,7 +685,7 @@ function resizeCtxFunction(iter, ctx, data, config) {
             ctx.canvas.style.width = afterWidth + "px";
         } else {
             ctx.canvas.width = afterWidth;
-            ctx.canvas.style.width = eval(afterWidth / pxRatio) + "px";
+            ctx.canvas.style.width = (afterWidth / pxRatio) + "px";
         }
     }
     if (pxRatio > 1 || afterHeight != beforeHeight) {
@@ -694,7 +694,7 @@ function resizeCtxFunction(iter, ctx, data, config) {
             ctx.canvas.style.height = afterHeight + "px";
         } else {
             ctx.canvas.height = afterHeight;
-            ctx.canvas.style.height = eval(afterHeight / pxRatio) + "px";
+            ctx.canvas.style.height = (afterHeight / pxRatio) + "px";
         }
     }
     ctx.scale(pxRatio, pxRatio);
@@ -779,7 +779,8 @@ function redrawGraph(ctx, data, config) {
         //    tmpctx.canvas.style.width=ctx.canvas.style.width;
         //    tmpctx.canvas.style.height=ctx.canvas.style.height;
         var myGraph = new Chart(tmpctx);
-        eval("myGraph." + tmpctx.tpchartSub + "(data,config);");
+
+        myGraph[tmpctx.tpchartSub](data,config);
         if (typeof ctx.vWidth == "number") ctx.vWidth = tmpctx.vWidth;
         ctx.ChartNewId = tmpctx.ChartNewId;
         ctx.tpchart = tmpctx.tpchart;
@@ -803,7 +804,7 @@ function redrawGraph(ctx, data, config) {
         ctx.drawImage(OSC, 0, 0);
     } else {
         var myGraph = new Chart(ctx);
-        eval("myGraph." + ctx.tpchartSub + "(data,config);");
+        myGraph[ctx.tpchartSub ](data,config);
     }
 };
 
@@ -835,7 +836,7 @@ function cursorInit() {
  *********************************************************************/
 function makeCursorObj(config, obj, nest) {
     createCursorDiv(config);
-    nest = (!nest) ? '' : 'document.' + nest + '.'
+    nest = (!nest) ? '' : 'document.' + nest + '.';
     this.css = bw.dom ? document.getElementById(obj).style : bw.ie4 ? document.all[obj].style : bw.ns4 ? eval(nest + "document.layers." + obj) : 0;
     this.moveIt = b_moveIt;
     cursorInit();
@@ -1075,7 +1076,7 @@ function highLightAction(action, ctx, data, config, v1, v2) {
                         else output += property + ': ' + config.highLightSet[property];
                     }
                     fndnewspec = true;
-                    eval("data.special[data.special.length]={" + output + "};");
+                    data.special[data.special.length]= JSON.parse("{" + output + "}");
                     data.special[data.special.length - 1].posi = j;
                     data.special[data.special.length - 1].posj = v2;
                     data.special[data.special.length - 1].typespecial = "highLight";
@@ -1091,7 +1092,7 @@ function highLightAction(action, ctx, data, config, v1, v2) {
                         else output += property + ': ' + config.highLightSet[property];
                     }
                     fndnewspec = true;
-                    eval("data.special[data.special.length]={" + output + "};");
+                    data.special[data.special.length]= JSON.parse("{" + output + "}");
                     data.special[data.special.length - 1].posi = v1;
                     data.special[data.special.length - 1].posj = j;
                     data.special[data.special.length - 1].typespecial = "highLight";
@@ -1105,7 +1106,7 @@ function highLightAction(action, ctx, data, config, v1, v2) {
                 else output += property + ': ' + config.highLightSet[property];
             }
             fndnewspec = true;
-            eval("data.special[data.special.length]={" + output + "};");
+            data.special[data.special.length]= JSON.parse("{" + output + "}");
             data.special[data.special.length - 1].posi = v1;
             data.special[data.special.length - 1].posj = v2;
             data.special[data.special.length - 1].typespecial = "highLight";
@@ -1142,7 +1143,6 @@ function displayAnnotate(ctx, data, config, rect, event, annotateDIV, jsGraphAnn
     annotateDIV.innerHTML = dispString;
     x = bw.ns4 || bw.ns5 ? event.pageX : event.x;
     y = bw.ns4 || bw.ns5 ? event.pageY : event.y;
-    if (bw.ie4 || bw.ie5) y = y + eval(scrolled);
     if (config.annotateRelocate === true) {
         var relocateX, relocateY;
         relocateX = 0;
@@ -5920,7 +5920,7 @@ window.Chart = function (context) {
         if (mathFct) {
             for (var i = 0; i < data.datasets.length; i++) {
                 mathFctName = data.datasets[i].drawMathDeviation;
-                if (typeof eval(mathFctName) == "function") {
+                if (typeof window[mathFctName] == "function") {
                     var parameter = {
                         data: data,
                         datasetNr: i
